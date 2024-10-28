@@ -1,0 +1,7 @@
+tensorflow_datasets
+ml_collections
+jax
+flax
+optax
+pandas
+seaborn
