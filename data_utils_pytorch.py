@@ -47,7 +47,7 @@ def load_data_pytorch(dataset, num_classes):
         raise ValueError(f"Unsupported dataset {dataset}")
 
     # Use DataLoader to create batches
-    batch_size = 64
+    batch_size = 512
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
 
