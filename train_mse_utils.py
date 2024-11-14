@@ -62,7 +62,7 @@ def accuracy(logits, targets):
 
 
 @jax.jit
-def train_batch(state, batch):
+def train_batch(state, batch, gradient_computer, batch_size):
     "Compute gradients, loss and accuracy for a single batch"
     #print('Compiling train batch')
     x, y = batch
@@ -76,8 +76,12 @@ def train_batch(state, batch):
     #calculate the gradients and loss
     grad_fn = jax.value_and_grad(loss_fn, has_aux = True)
     (loss, logits), grads = grad_fn(state.params)
+
+     # Compute clipped and noisy gradients for DP
+    clipped_noisy_grads, _ = gradient_computer.compute_gradients(grads, batch_size=batch_size)
+
     #update the state
-    state = state.apply_gradients(grads = grads)
+    state = state.apply_gradients(grads = clipped_noisy_grads)
     return state, loss
 
 @jax.jit
