@@ -145,7 +145,7 @@ def create_train_state(config, batches):
 
 # ### Save & Load Training Data
 
-def save_training_data(train_results, dfs, dfs_barrier, save_dir="training_data_1000_width128_b64_h512_2"):
+def save_training_data(train_results, dfs, dfs_barrier, save_dir="training_data_10_width128_b512_h4098"):
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
@@ -158,7 +158,7 @@ def save_training_data(train_results, dfs, dfs_barrier, save_dir="training_data_
     print(f"Data saved in '{save_dir}'")
 
 
-def load_training_data(save_dir="training_data_1000_width128_b64_h512_2"):
+def load_training_data(save_dir="training_data_10_width128_b512_h4098"):
     train_results_df = pd.read_csv(os.path.join(save_dir, 'train_results.csv'))
     dfs = pd.read_csv(os.path.join(save_dir, 'dfs.csv'))
     dfs_barrier = pd.read_csv(os.path.join(save_dir, 'dfs_barrier.csv'))
@@ -342,8 +342,8 @@ config.depth = 5  # Myrtle CNN depth
 config.in_dim = info['in_dim']
 config.num_classes = info['num_classes'] # CIFAR-10 has 10 classes
 
-config.batch_size = 64
-config.measure_examples = 512  # Examples for sharpness measurement
+config.batch_size = 512
+config.measure_examples = 4096  # Examples for sharpness measurement
 config.measure_batches = 1
 config.num_batches = data_utils_pytorch.estimate_num_batches(config.num_train, config.batch_size)
 config.power_iterations = 20  # For sharpness estimation
@@ -351,7 +351,7 @@ config.power_iterations = 20  # For sharpness estimation
 lr_exp_start = jax.device_put(1.0)
 lr_step = 0.4
 config.momentum = jax.device_put(0.0)
-config.num_steps = 1000
+config.num_steps = 10
 config.num_epochs = 5  # Number of epochs
 
 

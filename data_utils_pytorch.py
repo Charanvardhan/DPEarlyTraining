@@ -47,13 +47,12 @@ def load_data_pytorch(dataset, num_classes):
         raise ValueError(f"Unsupported dataset {dataset}")
 
     # Use DataLoader to create batches
-    batch_size = 512
+    batch_size = 256
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
 
     # Process a single batch for shape and preprocessing checks
     for x_train, y_train in train_loader:
-        print(f"Train batch shape: {x_train.shape}")
         x_train = x_train.to(torch.float64)
         y_train = y_train.to(torch.float64)
         break  # Only get the first batch to standardize and process

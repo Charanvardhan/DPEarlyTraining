@@ -15,7 +15,7 @@ from flax import core
 from flax import struct
 from jax.numpy.linalg import norm
 
-from data_utils import estimate_num_batches
+from data_utils_pytorch import estimate_num_batches
 
 class TrainState(struct.PyTreeNode):
     step: int
