@@ -1,0 +1,146 @@
+Input Notebook:  4098_early_training_phase_diagram_zeros.ipynb
+Output Notebook: output2.ipynb
+Executing:   0%|          | 0/29 [00:00<?, ?cell/s]Executing notebook with kernel: python3
+Executing:   3%|▎         | 1/29 [00:00<00:20,  1.40cell/s]Executing:   7%|▋         | 2/29 [00:01<00:28,  1.05s/cell]Executing:  10%|█         | 3/29 [00:03<00:27,  1.06s/cell]Executing:  28%|██▊       | 8/29 [00:05<00:11,  1.75cell/s]Executing:  55%|█████▌    | 16/29 [00:05<00:02,  4.61cell/s]Executing:  59%|█████▊    | 17/29 [00:20<00:02,  4.61cell/s]2024-11-05 21:34:26.019930: W external/xla/xla/service/platform_util.cc:206] unable to create StreamExecutor for CUDA:0: : CUDA_ERROR_OUT_OF_MEMORY: out of memory
+Executing:  62%|██████▏   | 18/29 [00:28<00:25,  2.29s/cell]Executing:  62%|██████▏   | 18/29 [00:29<00:18,  1.65s/cell]
+Traceback (most recent call last):
+  File "/home/myid/crm54892/ppmlFall/bin/papermill", line 8, in <module>
+    sys.exit(papermill())
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/core.py", line 1157, in __call__
+    return self.main(*args, **kwargs)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/core.py", line 1078, in main
+    rv = self.invoke(ctx)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/core.py", line 1434, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/core.py", line 783, in invoke
+    return __callback(*args, **kwargs)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/decorators.py", line 33, in new_func
+    return f(get_current_context(), *args, **kwargs)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/papermill/cli.py", line 235, in papermill
+    execute_notebook(
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/papermill/execute.py", line 131, in execute_notebook
+    raise_for_execution_errors(nb, output_path)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/papermill/execute.py", line 251, in raise_for_execution_errors
+    raise error
+papermill.exceptions.PapermillExecutionError: 
+---------------------------------------------------------------------------
+Exception encountered at "In [9]":
+---------------------------------------------------------------------------
+XlaRuntimeError                           Traceback (most recent call last)
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/xla_bridge.py:896, in backends()
+    894   continue
+--> 896 backend = _init_backend(platform)
+    897 _backends[platform] = backend
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/xla_bridge.py:982, in _init_backend(platform)
+    981 logger.debug("Initializing backend '%s'", platform)
+--> 982 backend = registration.factory()
+    983 # TODO(skye): consider raising more descriptive errors directly from backend
+    984 # factories instead of returning None.
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/xla_bridge.py:674, in register_plugin.<locals>.factory()
+    673 if distributed.global_state.client is None:
+--> 674   return xla_client.make_c_api_client(plugin_name, updated_options, None)
+    676 distribute_options = {
+    677     'node_id': distributed.global_state.process_id,
+    678     'num_nodes': distributed.global_state.num_processes,
+    679 }
+
+File ~/ppmlFall/lib/python3.10/site-packages/jaxlib/xla_client.py:200, in make_c_api_client(plugin_name, options, distributed_client)
+    199   options = {}
+--> 200 return _xla.get_c_api_client(plugin_name, options, distributed_client)
+
+XlaRuntimeError: INTERNAL: no supported devices found for platform CUDA
+
+During handling of the above exception, another exception occurred:
+
+RuntimeError                              Traceback (most recent call last)
+Cell In[9], line 35
+     31 config.power_iterations = 20
+     33 #optimizer related hyperparameters
+     34 # Sample learning rates in powers of 2 starting with 2**0.0
+---> 35 lr_exp_start = jax.device_put(0.0)
+     36 lr_step = 0.2 # step size for increasing the learning rate
+     37 config.momentum = jax.device_put(0.0) # momentum for sgd
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/api.py:2291, in device_put(x, device, src, donate, may_alias)
+   2289 for xf, d in zip(x_flat, device_flat):  # type: ignore
+   2290   _check_sharding(shaped_abstractify(xf), d)
+-> 2291 out_flat = dispatch.device_put_p.bind(
+   2292     *x_flat, devices=device_flat, srcs=src_flat,
+   2293     copy_semantics=copy_semantics)
+   2294 return tree_unflatten(treedef, out_flat)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/core.py:438, in Primitive.bind(self, *args, **params)
+    435 def bind(self, *args, **params):
+    436   assert (not config.enable_checks.value or
+    437           all(isinstance(arg, Tracer) or valid_jaxtype(arg) for arg in args)), args
+--> 438   return self.bind_with_trace(find_top_trace(args), args, params)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/core.py:442, in Primitive.bind_with_trace(self, trace, args, params)
+    440 def bind_with_trace(self, trace, args, params):
+    441   with pop_level(trace.level):
+--> 442     out = trace.process_primitive(self, map(trace.full_raise, args), params)
+    443   return map(full_lower, out) if self.multiple_results else full_lower(out)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/core.py:955, in EvalTrace.process_primitive(self, primitive, tracers, params)
+    953   return call_impl_with_key_reuse_checks(primitive, primitive.impl, *tracers, **params)
+    954 else:
+--> 955   return primitive.impl(*tracers, **params)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/dispatch.py:534, in _batched_device_put_impl(devices, srcs, copy_semantics, *xs)
+    532 shard_arg_indices, shard_arg_xs, shard_arg_shardings = [], [], []
+    533 for i, (x, device, src, cp) in enumerate(zip(xs, devices, srcs, copy_semantics)):
+--> 534   y = _device_put_impl(x, device=device, src=src, copy=cp)
+    535   if isinstance(y, _DeferredShardArg):
+    536     shard_arg_indices.append(i)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/dispatch.py:523, in _device_put_impl(x, device, src, copy)
+    518     return _device_put_sharding_impl(x, aval, l.sharding, copy)
+    519   return api.jit(
+    520       _identity_fn, out_shardings=l,
+    521       donate_argnums=(0 if copy == CopySemantics.DONATE else None))(x)
+--> 523 return _device_put_sharding_impl(x, aval, device, copy)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/dispatch.py:482, in _device_put_sharding_impl(x, aval, device, copy)
+    478     device = x.sharding._device_assignment[0] if device is None else device
+    479     return pxla.batched_device_put(aval, SingleDeviceSharding(device), [x],
+    480                                    [device])
+--> 482 sh = SingleDeviceSharding(pxla._get_default_device()
+    483                           if device is None else device)
+    484 return _DeferredShardArg(x, sh, aval, device is not None)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/interpreters/pxla.py:1716, in _get_default_device()
+   1715 def _get_default_device() -> xc.Device:
+-> 1716   return config.default_device.value or xb.local_devices()[0]
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/xla_bridge.py:1152, in local_devices(process_index, backend, host_id)
+   1150   process_index = host_id
+   1151 if process_index is None:
+-> 1152   process_index = get_backend(backend).process_index()
+   1153 if not (0 <= process_index < process_count(backend)):
+   1154   raise ValueError(f"Unknown process_index {process_index}")
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/xla_bridge.py:1028, in get_backend(platform)
+   1024 @lru_cache(maxsize=None)  # don't use util.memoize because there is no X64 dependence.
+   1025 def get_backend(
+   1026     platform: None | str | xla_client.Client = None
+   1027 ) -> xla_client.Client:
+-> 1028   return _get_backend_uncached(platform)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/xla_bridge.py:1007, in _get_backend_uncached(platform)
+   1003   return platform
+   1005 platform = (platform or _XLA_BACKEND.value or _PLATFORM_NAME.value or None)
+-> 1007 bs = backends()
+   1008 if platform is not None:
+   1009   platform = canonicalize_platform(platform)
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/xla_bridge.py:912, in backends()
+    910       else:
+    911         err_msg += " (you may need to uninstall the failing plugin package, or set JAX_PLATFORMS=cpu to skip this backend.)"
+--> 912       raise RuntimeError(err_msg)
+    914 assert _default_backend is not None
+    915 if not config.jax_platforms.value:
+
+RuntimeError: Unable to initialize backend 'cuda': INTERNAL: no supported devices found for platform CUDA (you may need to uninstall the failing plugin package, or set JAX_PLATFORMS=cpu to skip this backend.)
+

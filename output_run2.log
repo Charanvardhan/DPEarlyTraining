@@ -1,0 +1,79 @@
+Input Notebook:  4098_early_training_phase_diagram_zeros.ipynb
+Output Notebook: output_run2.ipynb
+Executing:   0%|          | 0/29 [00:00<?, ?cell/s]Executing notebook with kernel: python3
+Executing:   3%|▎         | 1/29 [00:00<00:20,  1.36cell/s]Executing:   7%|▋         | 2/29 [00:01<00:27,  1.03s/cell]Executing:  10%|█         | 3/29 [00:03<00:27,  1.07s/cell]Executing:  28%|██▊       | 8/29 [00:05<00:12,  1.73cell/s]Executing:  48%|████▊     | 14/29 [00:05<00:03,  3.81cell/s]Executing:  59%|█████▊    | 17/29 [00:20<00:03,  3.81cell/s]Executing:  62%|██████▏   | 18/29 [00:26<00:21,  2.00s/cell]2024-11-05 04:56:55.521065: W external/xla/xla/tsl/framework/bfc_allocator.cc:306] Allocator (GPU_0_bfc) ran out of memory trying to allocate 4.39GiB with freed_by_count=0. The caller indicates that this is not a failure, but this may mean that there could be performance gains if more memory were available.
+2024-11-05 05:28:05.205077: W external/xla/xla/tsl/framework/bfc_allocator.cc:306] Allocator (GPU_0_bfc) ran out of memory trying to allocate 6.21GiB with freed_by_count=0. The caller indicates that this is not a failure, but this may mean that there could be performance gains if more memory were available.
+2024-11-05 05:28:08.361694: W external/xla/xla/tsl/framework/bfc_allocator.cc:306] Allocator (GPU_0_bfc) ran out of memory trying to allocate 6.21GiB with freed_by_count=0. The caller indicates that this is not a failure, but this may mean that there could be performance gains if more memory were available.
+2024-11-05 05:28:15.166621: W external/xla/xla/tsl/framework/bfc_allocator.cc:306] Allocator (GPU_0_bfc) ran out of memory trying to allocate 8.77GiB with freed_by_count=0. The caller indicates that this is not a failure, but this may mean that there could be performance gains if more memory were available.
+2024-11-05 05:28:16.490636: W external/xla/xla/tsl/framework/bfc_allocator.cc:306] Allocator (GPU_0_bfc) ran out of memory trying to allocate 2.41GiB with freed_by_count=0. The caller indicates that this is not a failure, but this may mean that there could be performance gains if more memory were available.
+2024-11-05 05:28:29.026410: W external/xla/xla/tsl/framework/bfc_allocator.cc:497] Allocator (GPU_0_bfc) ran out of memory trying to allocate 6.57GiB (rounded to 7058878976)requested by op 
+2024-11-05 05:28:29.026712: W external/xla/xla/tsl/framework/bfc_allocator.cc:508] *___________________________________________________________________________________________________
+E1105 05:28:29.026752  824005 pjrt_stream_executor_client.cc:3085] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 7058878944 bytes.
+Executing:  69%|██████▉   | 20/29 [32:09<28:51, 192.33s/cell]Executing:  69%|██████▉   | 20/29 [32:12<14:29, 96.64s/cell] 
+Traceback (most recent call last):
+  File "/home/myid/crm54892/ppmlFall/bin/papermill", line 8, in <module>
+    sys.exit(papermill())
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/core.py", line 1157, in __call__
+    return self.main(*args, **kwargs)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/core.py", line 1078, in main
+    rv = self.invoke(ctx)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/core.py", line 1434, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/core.py", line 783, in invoke
+    return __callback(*args, **kwargs)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/click/decorators.py", line 33, in new_func
+    return f(get_current_context(), *args, **kwargs)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/papermill/cli.py", line 235, in papermill
+    execute_notebook(
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/papermill/execute.py", line 131, in execute_notebook
+    raise_for_execution_errors(nb, output_path)
+  File "/home/myid/crm54892/ppmlFall/lib/python3.10/site-packages/papermill/execute.py", line 251, in raise_for_execution_errors
+    raise error
+papermill.exceptions.PapermillExecutionError: 
+---------------------------------------------------------------------------
+Exception encountered at "In [10]":
+---------------------------------------------------------------------------
+XlaRuntimeError                           Traceback (most recent call last)
+Cell In[10], line 21
+     18 config.lr_const = 2**lr_exp
+     19 print(f'w: {config.width}, d: {config.depth}, I: {iteration}, J: {run}, x: {lr_exp:0.1f}, B: {config.batch_size}, t: {config.num_steps}')
+---> 21 divergence, train_results = train_and_evaluate(config, train_ds)
+     23 if not divergence:
+     24     # append training results
+     25     df = pd.DataFrame(train_results, columns = ['step', 'epoch', 'train_loss_step', 'train_loss_init', 'train_accuracy', 'sharpness_step', 'sharpness_init'], dtype = float)
+
+Cell In[8], line 20, in train_and_evaluate(config, train_ds)
+     17 train_batches = data_utils_pytorch.data_stream(rng, train_ds, config.measure_examples)
+     19 #create model
+---> 20 state, sharpness_init = create_train_state(config, train_batches)
+     21 init_params = state.params
+     23 #print(f'Top Hessian init: {sharpness_init:0.4f}, Learning rate: {config.lr_const/sharpness_init:0.4f}')
+     24 
+     25 #measure metrics at initialization
+
+Cell In[7], line 29, in create_train_state(config, batches)
+     26 _state = train_utils.TrainState.create(apply_fn = model.apply, params = init_params, opt = _opt)
+     28 #calculate hessian and learning rate
+---> 29 sharpness_init = train_utils.estimate_hessian(_state, batches, num_batches = config.measure_batches, power_iterations = config.power_iterations)
+     30 lr_rate = config.lr_const/sharpness_init
+     32 # create a new state with learning rate lr_rate; 
+     33 # updating learning rate does not work since the recemt flax update
+
+File ~/DPEarlyTraining/train_mse_utils.py:229, in estimate_hessian(state, batches, num_batches, power_iterations)
+    226     batch_labels_jax = convert_to_jax(batch[1])
+    228     # Now pass the JAX tensors to JAX operations
+--> 229     top_hessian_batch = hessian_batch(state, (batch_images_jax, batch_labels_jax), power_iterations)
+    230     top_hessian += top_hessian_batch
+    231 top_hessian = top_hessian / num_batches
+
+    [... skipping hidden 10 frame]
+
+File ~/ppmlFall/lib/python3.10/site-packages/jax/_src/interpreters/pxla.py:1287, in ExecuteReplicated.__call__(self, *args)
+   1285   self._handle_token_bufs(result_token_bufs, sharded_runtime_token)
+   1286 else:
+-> 1287   results = self.xla_executable.execute_sharded(input_bufs)
+   1289 if dispatch.needs_check_special():
+   1290   out_arrays = results.disassemble_into_single_device_arrays()
+
+XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 7058878944 bytes.
+
