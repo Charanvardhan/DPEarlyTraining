@@ -66,6 +66,10 @@ def train_batch(state, batch, gradient_computer, batch_size):
     "Compute gradients, loss and accuracy for a single batch"
     #print('Compiling train batch')
     x, y = batch
+    print(f"Inside train_batch - x type: {type(x)}, y type: {type(y)}")
+     # Ensure inputs are JAX-compatible
+    x = convert_to_jax(x)
+    y = convert_to_jax(y)
 
     def loss_fn(params):
         "MSE loss"
